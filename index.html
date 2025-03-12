@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Pembelian Jajanan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-image: url('jajanan.jpeg');
+            background-size: cover;
+            background-position: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label, input, select, textarea {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #struk {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Form Pembelian Jajanan</h2>
+        <form id="orderForm">
+            <label for="nama">Nama Pembeli:</label>
+            <input type="text" id="nama" name="nama" required>
+
+            <label for="kode">Kode Pembeli:</label>
+            <input type="text" id="kode" name="kode" readonly>
+            <button type="button" onclick="generateKode()">Generate Kode</button>
+
+            <br>
+            <br>
+            <label for="barang">Pilih Jajanan:</label>
+            <select id="barang" name="barang" required>
+                <option value="Dimsum Mentai" data-price="5000">Dimsum Mentai - Rp 5.000</option>
+                <option value="Thai Milk Bun" data-price="30000">Thai Milk Bun - Rp 30.000</option>
+                <option value="Cireng Isi" data-price="2500">Cireng Isi - Rp 2.500</option>
+                <option value="Dry Fruit" data-price="23000">Dry Fruit - Rp 23.000</option>
+                <option value="Pisang Cokju" data-price="2500">Pisang Cokju - Rp 2.500</option>
+                <option value="Pancake Donuts" data-price="3000">Pancake Donuts - Rp 3.000</option>
+                <option value="Keripik Pisang Lumer" data-price="15000">Keripik Pisang Lumer - Rp 15.000</option>
+            </select>
+
+            <label for="jumlah">Jumlah:</label>
+            <input type="number" id="jumlah" name="jumlah" min="1" value="1" required>
+
+            <label for="alamat">Alamat Pengiriman:</label>
+            <textarea id="alamat" name="alamat" required></textarea>
+
+            <label for="metode">Metode Pembayaran:</label>
+            <select id="metode" name="metode">
+                <option value="transfer">Transfer Bank</option>
+                <option value="cod">Cash On Delivery (COD)</option>
+                <option value="ewallet">E-Wallet</option>
+            </select>
+            
+            <h3>Total Harga: <span id="totalHarga">Rp 2.500</span></h3>
+            <button type="submit">Kirim</button>
+        </form>
+    </div>
+
+    <div id="struk" class="container">
+        <center><h2>Struk Pembelian</h2></center>
+        <table>
+            <tr><th>Nama Pembeli</th><td id="strukNama"></td></tr>
+            <tr><th>Kode Pembeli</th><td id="strukKode"></td></tr>
+            <tr><th>Jajanan</th><td id="strukBarang"></td></tr>
+            <tr><th>Jumlah</th><td id="strukJumlah"></td></tr>
+            <tr><th>Total Harga</th><td id="strukTotal"></td></tr>
+            <tr><th>Alamat</th><td id="strukAlamat"></td></tr>
+            <tr><th>Metode Pembayaran</th><td id="strukMetode"></td></tr>
+        </table>
+        <br>
+        <button onclick="window.print()">Cetak Struk</button>
+        <br>
+    </div>
+
+    <script>
+        function updateHarga() {
+            let barang = document.getElementById("barang");
+            let jumlah = document.getElementById("jumlah");
+            let hargaBarang = parseInt(barang.options[barang.selectedIndex].getAttribute("data-price"));
+            let total = hargaBarang * parseInt(jumlah.value);
+            document.getElementById("totalHarga").textContent = "Rp " + total.toLocaleString("id-ID");
+        }
+        
+        function generateKode() {
+            document.getElementById("kode").value = "PB" + Math.floor(1000 + Math.random() * 9000);
+        }
+        
+        document.getElementById("orderForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            document.getElementById("strukNama").textContent = document.getElementById("nama").value;
+            document.getElementById("strukKode").textContent = document.getElementById("kode").value;
+            document.getElementById("strukBarang").textContent = document.getElementById("barang").value;
+            document.getElementById("strukJumlah").textContent = document.getElementById("jumlah").value;
+            document.getElementById("strukTotal").textContent = document.getElementById("totalHarga").textContent;
+            document.getElementById("strukAlamat").textContent = document.getElementById("alamat").value;
+            document.getElementById("strukMetode").textContent = document.getElementById("metode").value;
+            document.getElementById("struk").style.display = "block";
+        });
+        
+        document.getElementById("barang").addEventListener("change", updateHarga);
+        document.getElementById("jumlah").addEventListener("input", updateHarga);
+    </script>
+</body>
+</html>
